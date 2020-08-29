@@ -2,7 +2,7 @@ The previous articles describe how to unwrap labels programmatically and how we
 trained a neural network to detect keypoints.
 This article is about how to stitch multiple images into a single long one.
 
-Image for post
+![logo](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/logo.jpg)
 
 The original set of images (below) was segmented and unwrapped in advance by a 
 neural network, as described in the previous articles. Please see them for 
