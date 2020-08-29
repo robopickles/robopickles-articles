@@ -1,4 +1,4 @@
-# robopickles-articles
+# Robo Pickles Articles
 Articles in computer vision and machine learning
 
 Seamless Stitching of Perfect Labels
