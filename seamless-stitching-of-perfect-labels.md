@@ -74,12 +74,10 @@ Let’s blend them using a naive method, where the intersected region is
 calculated as a mean of left and right images. Unfortunately, the result isn’t 
 really impressive — there are double vision artifacts across the image, 
 especially closer to stitches.
-
-Image for post
+![stitched without optical flow](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/stitched_without_optical_flow.jpg)
 
 The animation shows the shift between the tiles:
-
-Image for post
+![animation stitched](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/stitched_animation.gif)
 
 It’s not surprising — the images were taken from slightly different angles, 
 and there are tiny differences between them.
@@ -87,44 +85,39 @@ For seamless stitching, it’s required to compensate for those non-linear
 distortions. The distortion can be described as a smooth vector field, with 
 the same resolution as the original tiles. This vector field is called 
 “optical flow”.
+![optical flow](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/optical_flow.png)
 
 There are several techniques to calculate the flow — with functions that come 
 with OpenCV or special neural network architectures.
 Our optical flow for the given two tiles:
 To avoid artifacts during stitching, it’s required to compensate both images 
 proportionally. For that purpose, we split the optical flow into two matrices:
-
-Image for post
+![optical flow split](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/optical_flow_split.png)
 
 Now the two images are almost perfectly aligned:
+![animation optical flow](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/optical_flow_animation.gif)
 
-Image for post
 
 Once we blend the full image, it appears to be geometrically correct, but we 
 observe a brightness jump:
-
-Image for post
+![stitched with optical flow](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/stitched_with_optical_flow.jpg)
 
 The issue is quite easy to fix if, instead of mean values, we use a blending 
 formula, where the values are applied with the gradient:
-
-Image for post
+![blending animation](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/blending_animation.gif)
 
 With that approach, the stitching is absolutely seamless:
-
-Image for post
+![stitched with blending](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/stitched_with_blend.jpg)
 
 There are other blending algorithms that work well with panorama stitching 
 (such as multiband blending), but they don’t work well for images with text — 
 only optical flow compensation can completely remove ghosting on characters.
 
 Let’s stitch the entire set of images:
-
-Image for post
+![frames set](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/frames_set.jpg)
 
 The final result:
-
-Image for post
+![stitched long](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/stitched_long.jpg)
 
 Future improvements could be a shadow effect compensation (the right side of 
 the image), and even doing more post-processing to improve colors and contrast.
