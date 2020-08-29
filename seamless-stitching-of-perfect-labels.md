@@ -8,7 +8,8 @@ The original set of images (below) was segmented and unwrapped in advance by a
 neural network, as described in the previous articles. Please see them for 
 more detail.
 
-Image for post
+![multiple unwrap](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/unwrap_multiple_fragments.jpg)
+
 
 How does stitching even work? We take two images with overlapping areas, 
 compute the mutual shift from each other, and blend them. Sounds pretty easy, 
@@ -18,10 +19,9 @@ images, and find a formula to convert points from the first image into points
 on the second one. The mentioned shift can be represented by a homography 
 matrix, where the cell values encode the different types of transformations 
 together — scaling, translation, and rotation.
-
 As we can see, in these photos, there are plenty of common objects:
 
-Image for post
+![match frames](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/match_frames.jpg)
 
 The problem with the given features is that it’s hard to detect them 
 programmatically. Luckily, there are algorithms that detect “good” 
@@ -34,16 +34,16 @@ but the patent recently expired (in March 2020), so it will probably become a
 part of standard OpenCV soon.
 Now, let’s find similar features on both images:
 
-Image for post
+![left image keypoints](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/left_fragment_keypoints.jpg)
 
-Image for post
+![right image keypoints](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/right_fragment_keypoints.jpg)
 
 Using a Flann based matcher can find matches relatively quickly between two 
 images, despite a large number of corners.
 The yellow lines in the picture below connect similar features in the left 
 and right images.
 
-Image for post
+![fragment matching sift](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/fragment_matching_sift.jpg)
 
 For clarity, the images were placed above each other with the proper offset 
 (which is calculated at a later point in the process, rather than here).
@@ -52,7 +52,7 @@ were wrong. However, the good matches will always generate the same
 translation, meantime the bad ones will give chaotically different directions. 
 A picture below depicts only the good matches:
 
-Image for post
+![fragment matching sift corrected](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/fragment_matching_sift_corrected.jpg)
 
 One of the approaches to find a proper translation is a RANSAC algorithm. 
 It goes through the matches iteratively and uses a voting approach to figure 
@@ -64,12 +64,11 @@ will look for the following transformations: rotation + scaling + translation
 (4 dimensions of freedom).
 
 The left image:
+![left fragment transformed](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/left_fragment_transformed.jpg)
 
-Image for post
 
 The right image:
-
-Image for post
+![right fragment transformed](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/right_fragment_transformed.jpg)
 
 Let’s blend them using a naive method, where the intersected region is 
 calculated as a mean of left and right images. Unfortunately, the result isn’t 
