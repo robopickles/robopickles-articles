@@ -34,7 +34,12 @@ but the patent recently expired (in March 2020), so it will probably become a
 part of standard OpenCV soon.
 Now, let’s find similar features on both images:
 
+    sift = cv2.xfeatures2d.SIFT_create()
+    features_left = sift.detectAndCompute(left_image, None)
+
 ![left image keypoints](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/left_fragment_keypoints.jpg)
+
+    features_right = sift.detectAndCompute(right_image, None)
 
 ![right image keypoints](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/right_fragment_keypoints.jpg)
 
@@ -62,6 +67,8 @@ the difference between methods is in dimensions of freedom the transformation
 is going to have. In our case, we need to use estimateAffinePartial2D which 
 will look for the following transformations: rotation + scaling + translation 
 (4 dimensions of freedom).
+
+    H, _ = cv2.estimateAffinePartial2D(right_matches, left_matches, False)
 
 The left image:
 ![left fragment transformed](https://raw.githubusercontent.com/robopickles/robopickles-articles/master/images/seamless-stitching-of-perfect-labels/left_fragment_transformed.jpg)
